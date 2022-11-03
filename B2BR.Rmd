@@ -1,0 +1,3011 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+#1.Veri Yapıları 
+##1.1. Atama Operatörleri
+
+```{r}
+# =
+# <- 
+# <<-
+# assign
+
+a <- 12
+b <<- "umut"
+c = 30 
+assign("Arzum", value = "LOVE")
+
+a + c
+b
+Arzum
+```
+
+##1.2.Vektör Oluşturma
+
+```{r}
+vec <- c(1:16)
+vec
+
+vecChar <- c("U","m","u","t")
+vecChar
+
+vecBool <- c(T,F,TRUE,FALSE,FALSE,T)
+vecBool
+
+vecKarma <- c(1,3,4,"u","b",T,F)        #Kendi hiyerarşisine göre türlere çevirir. Hepsini char tipi yaptı.
+vecKarma
+
+#vecHata <- c(1,3,4,5,,3,12,19)          #Boşta eleman olduğu için atamayı yapmadı.
+
+install.packages("jquerylib")
+library(jquerylib)
+
+.libPaths()
+```
+
+##1.3. Liste Oluşturma 
+- Liste içerisinde her türden elemanı özelliklerini koruyarak saklayabiliriz.
+
+```{r}
+l <- list(13,56,47,89);l
+l[["13"]]
+
+l <- list( names = c( "Umut", "Arzum", "Melih", "Kaan" ), ages = c( 21, 22, 20, 21 ), loc = c( "SAM", "GUM", "ANK", "IST" ), "1" = c(1,2,3,4))
+l
+l$"1"
+l[2]
+l[[2]]
+
+```
+
+##1.4. DataFrame Oluşturma
+
+```{r}
+names <- c( "Umut", "Arzum", "Melih", "Kaan" )
+ages = c( 21, 22, 20, 21 )
+loc = c( "SAM", "GUM", "ANK", "IST" )
+
+df <- data.frame(names,ages,loc) ; df
+
+View(df)
+
+df$ages
+df$loc
+df[1,2]
+df[2,3]
+
+```
+
+##1.5. Matris Oluşturma 
+- byrow = T,F parametresi değerleri satırlar bazında sıralasın mı ?
+
+```{r}
+?seq
+mat <- matrix(data = seq(-3,7,length.out = 15), nrow = 5, ncol = 3) ; mat
+
+mat2 <- matrix(data = seq(-3,7,length.out = 15), nrow = 5, ncol = 3,byrow = T) ; mat2
+
+mat3 <- matrix(seq(0,13,4), nrow = 3, ncol = 4 ) ; mat3       # Aynı değerleri tekrar kullanır.
+
+```
+
+#2.Veri Yapılarında Seçimler Ve Değiştirmeler 
+##2.1.Vektörlerde Seçimler Ve Değiştirmeler 
+###2.1.1.Vektörlerde Eleman Seçme
+
+```{r}
+v <- seq(3,18,0.5) ; v
+v[7]
+
+v[1:9]
+
+v[c(3,5,7,9,14)]
+
+v[seq(0,20,5)]
+
+```
+
+###2.1.2.Vektörlerde Eleman Silme
+
+```{r}
+v <- seq(3,18,0.5) ; v ; length(v)
+
+v[-3]     # We have to do assignment again.
+
+v2 <- v[-(1:10)] ; length(v2)
+
+willdelete <- c(3,5,7,9,12,17,31)
+v3 <- v[-willdelete] ; length(v3)
+
+```
+
+###2.1.3.Vektör Elemanlarını Değiştirme
+
+```{r}
+v <- seq(3,18,0.5) ; v ; length(v)
+
+v[3] <- 52 ; v
+
+v[c(3,5,7,9)] <- c(890,1002,389,1071) ; v
+
+```
+
+###2.1.4.Vektörlerde Yeni Eleman Ekleme
+
+```{r}
+v <- seq(0,7,2) ; v ; length(v)
+
+v[5] <- 1 ; v
+
+v[6:9] <- -7:-4 ; v
+
+v[30] <- 47 ; v
+
+v[c(23,26,29)] <- c(3,5,7) ; v
+
+```
+
+##2.2.Listelerde Seçimler ve Değiştirmeler
+
+###2.2.1.Listelerde Eleman Seçimleri
+
+```{r}
+l <- list( names = c( "Umut", "Arzum", "Melih", "Kaan" ), ages = c( 21, 22, 20, 21 ), loc = c( "SAM", "GUM", "ANK", "IST" ) )
+l
+
+l[2]    ; class(l[2])    #Listenin bir elemanı olarak verir.
+l["ages"]
+
+l[[2]]  ; class(l[[2]])  #Doğrudan liste içerisindeki elemanı verir.
+l[["ages"]]
+
+l$ages  ;class(l$names)  #Doğrudan liste içerisindeki elemanı verir.
+
+l[[1]][2]
+l$names[1:3]
+
+
+names(l)
+
+attributes(l)
+
+str(l)
+str(l[2])
+str(l[[2]])
+
+typeof(l)
+typeof(l$loc)
+
+```
+
+###2.2.2.Listelerde Eleman Ekleme-Silme
+
+-   Listelerde silme işleme NULL değerine atama ile yapılır.
+
+```{r}
+l <- list( names = c( "Umut", "Arzum", "Melih", "Kaan" ), ages = c( 21, 22, 20, 21 ), loc = c( "SAM", "GUM", "ANK", "IST" ) )
+l
+
+l[["loc"]] <- NULL ; l  # NULL ile silme iileminde tekrar atama yapmak gerekmez.
+
+
+l <- list( names = c( "Umut", "Arzum", "Melih", "Kaan" ), ages = c( 21, 22, 20, 21 ), loc = c( "SAM", "GUM", "ANK", "IST" ) )
+l <- l[-3] ; l
+
+
+# Liste içerisindeki elemanın elemanını silerken uygulanır.
+l$names <- l$names[-4] ; l
+
+```
+
+###2.2.3.Listelerde Elemanları Değiştirme
+
+```{r}
+li <- list( c(1, 3, 5, 7), Names = vector(mode = "character", length = 4), ID = numeric(length = 4) ) ; li
+
+li[[1]][5] <- 9 ; li
+
+li$Names <- c("Umut", "in love", "with", "Arzum") ; li
+
+li$ID[1:4] <- c(2, 4, 6, 8) ; li
+
+
+names(li)
+
+names(li)[1] <- "Odd" ; li
+
+```
+
+###2.2.4.Listelere Eleman Ekleme
+
+```{r}
+x <- list(odd = c(1, 3, 5, 7, 9), even = c(0, 2, 4, 6, 8)) ; x
+primeNumbers <- c(2, 3, 5, 7, 11, 13, 17, 19)
+
+x$primeNumbers <- primeNumbers ; x  #or x[3] <- primeNumbers
+
+x[[4]] <- c(1, 3, 6, 10 , 15, 21) ; names(x)[4] <- "TriangleNumbers" ; x
+
+x[5] <- "FifthElement" ; x
+
+x[10] <- 47 ; x
+```
+
+##2.3.Matrix'lerde Seçimler ve Değiştirmeler
+
+###2.3.1. Matrix'lerde Eleman Seçimleri
+
+```{r}
+m1 <- matrix(data = seq(-13, 47, length.out = 28), ncol = 4, byrow = FALSE) ; m1
+
+m1[4]
+
+m1[1, 4]
+m1[3, 1:4] ; m1[3,]
+
+m1[4:7, 2:4]
+
+m1[c(3, 5), c(1, 4)]
+
+```
+
+###2.3.2.Matrix'lerde Satır ve Sütun Kaldırma
+
+```{r}
+m1 <- matrix(data = seq(-13, 47, length.out = 28), ncol = 4, byrow = T) ; m1
+
+m1[, -2]     # Kayıtlı kalmasını istiyorsak yeniden atama yapmak gerekir.
+
+m1[-4,]      # Kayıtlı kalmasını istiyorsak yeniden atama yapmak gerekir.
+
+m1[-c(2:5), ]
+
+m1[ , -c(1,3)]
+
+
+m1
+m1[3,2] <- 2754 ; m1    # Bir değer değiştirirken tekrar atama yapmaya gerek yok.
+
+# Ama satır sütun çıkarırken tekrar atama gerekli.
+m1 <- m1[-4, ] ; m1
+
+m1 <- m1[, -2] ; m1
+
+```
+
+###2.3.3.Matrix'lerde Satır ve Sütun Ekleme
+
+```{r}
+m1 <- matrix(data = seq(-13, 47, length.out = 28), ncol = 4, byrow = T) ; m1
+
+
+m1[8,] <- c(10, 11, 12, 13)           # Hatalı kullanım !
+
+?rbind
+rbind(m1,c(10, 11, 12, 13))           # Yeniden atama gerekli.
+
+m1 <- rbind(m1,c(10, 11, 12, 13)) ; m1
+
+
+?cbind
+cbind(m1, c(0, 1, 0, 1, 0, 1, 0, 1))
+
+m1 <- cbind(m1, c(0, 1, 0, 1, 0, 1, 0, 1)) ; m1
+
+```
+
+##2.4.DataFrame'lerde Seçimler ve Değiştirmeler
+
+###2.4.1. DataFrame'lerde Eleman Seçimi
+
+```{r}
+dtf <- data.frame(names = c("Umut", "Arzum", "Eymen", "Elmas"), age = c(21, 22, 5, 48), id = c(11, 12, 13, 14)) ; dtf
+
+# Satırlar sütunlar bazında eleman seçme
+dtf["id"] ; dtf["names"]
+
+dtf$age ; dtf[["id"]]
+
+dtf[, 3]
+dtf[2, ]
+
+dtf[c(2, 3), ]
+dtf[c(2, 3), c(2, 3)]
+
+dtf$id
+dtf$names
+
+
+#Teker Teker elemanları seçme
+dtf$age[2]
+dtf[["id"]][3]
+
+dtf[3, 2]
+dtf[2, 1]
+dtf[3, "names"]
+dtf[2, "age"]
+
+```
+
+###2.4.2.Dataframe'lerde Satır ve Sütun kaldırma
+
+```{r}
+df <- data.frame(names = c("Umut", "Arzum", "Eymen", "Elmas"), age = c(21, 22, 5, 48), id = c(11, 12, 13, 14)) ; df
+
+df[-3, ]         # Yeniden atama yapılması gerekir.
+df[, -2]         # Yeniden atama yapılması gerekir.
+
+df[-c(1, 3), -3] # Yeniden atama yapılması gerekir.
+
+
+df[ , 2] <- NULL ; df   # Yeniden atama gerekmiyor.
+
+df <- data.frame(names = c("Umut", "Arzum", "Eymen", "Elmas"), age = c(21, 22, 5, 48), id = c(11, 12, 13, 14)) ; df
+df["id"] <- NULL ; df   # Yeniden atama gerekmiyor.
+
+# Dataframe'den çıkarmalar yaparak vektör elde edelim.
+df <- df[, -2] ; df
+as.data.frame(df)       # Tekrar dataframe haline getirdik.
+
+# Aynı işlemi yaptığımızda dataframe olarak kalmasını istersek:
+df <- data.frame(names = c("Umut", "Arzum", "Eymen", "Elmas"), age = c(21, 22, 5, 48), id = c(11, 12, 13, 14)) ; df
+
+df <- df[-c(2, 3)] ; df 
+
+df[c("age", "id")] <- NULL ; df
+
+
+
+# rownames ve satır numaralrı düzenleme.
+df <- data.frame(names = c("Umut", "Arzum", "Eymen", "Elmas"), age = c(21, 22, 5, 48), id = c(11, 12, 13, 14)) ; df
+rownames(df)
+
+df <- df[-2, ] ; df ; rownames(df)
+rownames(df) <- c(seq(1, length(df), by = 1)) ; df
+df 
+```
+
+###2.4.3.Dataframe'lerde Eleman Değeri Değiştirme
+
+```{r}
+df <- data.frame(names = c("Umut", "Arzum", "Eymen", "Elmas"), age = c(21, 22, 5, 48), id = c(11, 12, 13, 14)) ; df
+
+df[3, 2] <- 4 ; df
+df$age[3] <- 5 ; df
+df[["id"]][2] <- 11 ; df
+
+df[c(3, 4), 3] <- c(10, 9) ; df
+df[1, c(2, 3)] <- 7 ; df
+```
+
+###2.4.4.Dataframe'lerde Satır ve Sütun Ekleme
+
+4 farklı yöntemle yapabiliriz.
+
+-   1.Yöntem: cbind ve rbind fonksiyonları kullanarak
+
+-   2.Yöntem: eklenecek sütun ya da satır numarasını girerek.
+
+-   3.Yöntem: df\$eklenecekSütunAdı'na atama yaparak.
+
+-   4.Yöntem:df["eklenecekSütunAdı"]'na atama yaparak.
+
+NOT: Atamalarda hatalardan kaçınmak için cbind ve rbind fonksiyonlarını
+kullanmaktır. Ayırca burada atanacak kısma dataframe() parantezi ile
+girersek daha güvenli olur.
+
+```{r}
+df <- data.frame(names = c("Umut", "Arzum", "Eymen", "Elmas"), age = c(21, 22, 5, 48), id = c(11, 12, 13, 14)) ; df
+
+# 1. Yöntem
+cbind(df, born = c("ATA", "GUM", "ÇAR", "SAM"))
+df <- cbind(df, born = c("ATA", "GUM", "ÇAR", "SAM")) ; df
+
+rbind(df,c("Melih", 20, 15, "ANT"))
+df <- rbind(df,c("Melih", 20, 15, "ANT")) ; df
+
+# 2. Yöntem
+# İlk önce dataframe'in satır ve sütun sayılarını öğrenelim.
+df
+dim(df)
+
+df[5] <- c(0, 1, 0, 1, 0) ; df    # R studio kendisi column name verdi.
+df[6, ] <- c("Ali", 7, 16, "ANK", 1) ; df
+
+#3. Yöntem
+df$symbol <- c("*", "-", "*", "-", "*", "-") ; df
+
+#4. Yöntem
+df["TrueFalse"] <- c(T, F, T, F, F, T) ;df
+
+
+# En güvenli yöntem.
+df
+df <- cbind(df, data.frame(salary = c(1300, 2400, 5700, 800, 670, 7300))) ; df
+
+df <- rbind(df, data.frame(names = c("Rıza", "Mesut"),
+                           age = c(13, 27),
+                           id = c(17, 18),
+                           born = c("MAL", "IST"),
+                           V5 = c(0, 1),
+                           symbol = c("*", "/"),
+                           TrueFalse = c(T, F),
+                           salary = c(30, 5300))
+            )
+df
+
+
+# Dataframe'leri cbind ve rbind ile birleştirmek.
+eklenecekSatır <- data.frame(names = c("Rıza", "Mesut"),
+                           age = c(13, 27),
+                           id = c(17, 18),
+                           born = c("MAL", "IST"),
+                           V5 = c(0, 1),
+                           symbol = c("*", "/"),
+                           TrueFalse = c(T, F),
+                           salary = c(30, 5300))
+df <- rbind(df, eklenecekSatır) ; df
+df
+
+eklenecekSütun <- data.frame("NewColumn" = c(F, F, F, F, F, F, F, F, F, F), 
+                             "NewColumn2"= c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+df <- cbind(df, eklenecekSütun) ; df
+```
+
+#3.Matematiksel İşlemler ve Vektörler
+
+##3.1.Temel Matematiksel İşlemler
+
+\*\* ya da \^ üslü işaretidir.
+
+```{r}
+x <- 3 ; x
+y <- 2 ** 3 ; y
+
+z <- x ** y
+sqrt(z)
+
+z / 5
+
+```
+
+##3.2.Vektörlerde Matematiksel İşlemler
+
+-   length() vektör uzunluğunu verir.
+
+-   range()
+
+-   which()
+
+-   seq()
+
+-   sample(), örneklem almak için kullanılır.
+
+-   set.seed()
+
+-   sort(), na.last = T/F,parametresini kullanmazsan kendiliğinden NA
+    değerlerini siler.
+
+-   index.return, parametresi sayesinde vektörün sıralı halinde olması
+    gereken indeksleri gösterir.
+
+-   rep()
+
+```{r}
+x <- c(4, 12, 7, 9, 11)
+x + 5
+x / 3
+x ** 2
+sqrt(x)
+
+
+length(x)
+
+min(x)
+max(x)
+
+range(x)
+
+
+index <- which(x < 10)
+x[index]
+
+which(x >= 9)
+x[which(x >= 9)]
+
+
+# seq kullanımı.
+?seq
+seq(from = 0, to = 100, by = 3.5)
+seq(from = -5, to = 26, length.out = 51)
+
+
+# sample kullanımı
+?sample
+
+x <- seq(from = -5, to = 26, length.out = 51) ; x
+sample(x)
+
+sample(x, size = 10, replace = F, prob = NULL)
+
+sample(x, size = 100, replace = F)            # replace kapalı olduğu halde populasyondan fazla size belirledik ve hata aldık.
+sample(x, size = 100, replace = T)            # replace, bir değerin birden fazla gelebilmesini sağlar.
+
+
+# sort kullanımı
+?sort
+x <- seq(from = -5, to = 26, length.out = 51) ; x
+
+set.seed(12312412)            # Alınan sample'ı sabitler.
+x.s <- sample(x, 15) ; x.s
+
+set.seed(313)
+x.s2 <- sample(x, 1) ; x.s2
+
+sort(x.s)
+sort(x.s, decreasing = T)
+
+sort(x.s, decreasing = F, index.return = T)
+
+
+y <- c("Umut", "Arzum",NA, "Elmas", "Melih",NA ,"Ali Eymen")
+sort(y)
+
+sort(y,na.last = T)
+sort(y,na.last = F)
+
+# rep kullanımı ( times ve each parametreleri)
+?rep
+
+rep(45, times = 10)
+
+rep(c(3,5,7,9), times = 3)
+
+rep(x.s, times = 4)
+
+
+
+rep(c(2,5,7), each = 3)
+
+```
+
+#4.Vektörlerde Betimsel İstatistiksel İşlemler ##4.1.Vektörlerde Genel
+İstatistiksel İşlemler - sum()
+
+-   mean()
+
+-   Serbestlik Derecesi ( Degree Of Freedom ): N - 1 'dir.
+
+-   Standard Sapma ( Standard Deviation ): sd()
+
+![](images/paste-034C8638.png)
+
+-   Variance: var()
+
+![](images/var.png)
+
+-   Median: veriler sortlandıktan sonra, serideki ortanca değerdir.
+    median()
+
+-   Range : açıklık. range(), diff(range())
+
+-   Quantile: çeyreklikler. quantile(x)
+
+-   Ortalama ve Medyan arasındaki fark:
+
+![](images/paste-9BA70128.png)
+
+```{r}
+x <- c(17,24,5,8,13,15,17,36,19,10,3,14)
+length(x)         # N
+sum(x)
+
+sum(x) / length(x)  # Ortalama
+mean(x)           # Ortalama
+
+
+length(x) - 1     # x'in serbestlik derecesi.
+
+sd(x)             # standard deviation of x
+
+var(x) ; sd(x)**2 # variance of x
+
+median(x)         # median of x
+
+range(x)
+diff(range(x))    # range of x
+
+quantile(x)       #quantile of x
+quantile(x, probs = c(0.3, 0.8, 0.93))
+
+```
+
+##4.2.Skewness
+
+-   Skewness Coefficient:( skewness() ) -1 ve 1 arasında değerler alır.
+    -1 ile 0 arasında sola çarpık, 0 ile 1 arasında verilerin sağa
+    çarpık olduğunun anlamına gelir.
+-   skewness()
+
+```{r}
+#skewness
+install.packages("e1071")
+library(e1071)
+
+y <- c(14,12,17,10,13,11,11,10,63,59,65,61)
+mean(y) ; median(y)
+hist(y)           # Sağa çarpık olduğunu görebiliriz.
+skewness(y)       # Değer sağa çarpıklığı kanıtladı.
+
+z <- c(1,2,1,8,7,9,5,6,8,9,10,11,12,13,10,14,12,14,10)
+mean(z) ; median(z)
+hist(z)
+skewness(z)
+
+```
+
+##4.3.Frekans(Sıklık) Hesaplama
+
+-   unique(): bir veri setinin tekil halini bize verir.
+
+-   table() : veri setini frekans'a göre bir tabloya çevirir.
+
+```{r}
+x <- c(1,3,2,1,1,5,7,5,9,3,6,4,2,3,8,8,2,7,7,7)
+unique(x)
+sort(unique(x))
+
+table(x)
+freq <- table(x) ; freq
+
+class(freq)
+attributes(freq)
+
+names(freq)
+freq["3"]
+
+
+y <- c("u", "m", "u", "t", "a", "r", "z", "u", "m")
+table(y)
+
+
+# Table kullanarak mod alalım.
+mod <- table(x)[which(table(x) == max(table(x)))] ; mod
+
+```
+
+##4.3.Kayıp Gözlemlerin Hesaplamalara Etkisi
+
+-   is.na() : Verideki na'ları bulur.
+-   any() : veri setinde hiç var mı ?
+
+```{r}
+x <- c(12,13,NA,14,15,NA,23,38,NA)
+sum(x)
+mean(x)
+
+# Bu parametreyi kullanabiliriz.
+sum(x, na.rm = T)
+mean(x, na.rm = T)
+
+# Verideki NA'ların yerini bulmak.
+is.na(x)
+which(is.na(x))     #NA'nın indeksi
+
+
+any(is.na(x))
+
+# Hepsini kullanarak.
+sd(x, na.rm = (any(is.na(x))))
+
+
+# NA'lara değer atamak
+index <- which(is.na(x)) ; index
+x[index] <- 0 ; x
+
+```
+
+##4.4.Normal Dağılan Veriler
+
+![](images/paste-A5719AEB.png)
+
+-   rnorm() : normla dağılan veri oluşturur.
+
+```{r}
+
+x <- rnorm(30, mean = 3, sd = 2.8)
+hist(x)
+
+y <- rnorm(80, mean = 0, sd = 1)
+hist(y)
+```
+
+#5.Veri Türleri
+
+-   integer( tam sayılar )
+
+-   numeric( reel sayılar )
+
+-   character( string, nominal )
+
+-   factorial( ordinal )
+
+-   logical( boolean )
+
+-   Factor to numeric: Burada factor'ün levellarına alfabetik olarak 1
+    den başlayarak sayı verir ve buna göre dönüşümü yapar. Eğer biz
+    faktörün levellarını kendimiz belirlediysek, bizim verdiğimiz sıraya
+    göre numaralandırma yapar.( f örneğindeki gibi)
+
+```{r}
+x <- c(1, 3, 5) ; class(x)
+
+y <- c("u", "m", "t") ; class(y)
+
+?factor
+z <- factor(c("a", "r", "z", "u", "m", "u", "t")) ; class(z)
+z
+
+l <- c(T, T, F, T, F, T) ; class(l)
+
+is.numeric(x)
+is.integer(x)       # R otomatik olarak verileri numeric sayıyor. Eğer integer olmasını istiyorsan belirtmen gerek.
+
+is.character(z)
+is.factor(z)
+is.logical(l)
+
+
+
+xI <- as.integer(x) ; class(x) ; xI
+xN <- as.numeric(x) ; class(x) ; xN
+
+yF <- as.factor(y) ; class(yF) ; yF
+
+zC <- as.character(z) ; class(zC) ; zC
+
+xC <- as.character(x) ; class(xC) ; xC
+
+#Numeric to logical
+xL <- as.logical(x) ; class(xL) ; xL
+
+a <- c(1, 0, 0, 34, 1, 0, 0, 90) ; a
+aL <- as.logical(a) ; class(aL) ; aL
+
+#Character to logical
+yL <- as.logical(y) ; class(yL) ; yL
+
+#Logical to character
+lC <- as.character(l) ; class(lC) ; lC
+
+#Factor to numeric
+z
+zN <- as.numeric(z) ; class(zN) ; zN
+
+f <- factor(c("c", "a", "b", "f", "a", "d", "b", "c", "f"), levels = c("f", "a", "c", "d", "b")) ; f
+fN <- as.numeric(f) ; class(fN) ; fN
+
+# Buradaki verileri numeric olarak çekmek için önce charactere oradan numerice dönmeliyiz.
+f2 <- factor(c("10", "21", "14", "42", "76", "13"), levels = c("42", "13", "10", "21", "76", "14")) ; f2
+f2C <- as.character(f2) ; f2C
+f2N <- as.numeric(f2C) ; f2N
+
+```
+
+#6.Dataframes ##6.1.Dataframe Boyutları
+
+```{r}
+df <- data.frame("names" = c("umut", "arzum", "kaan", "melih", "fuad"),
+                 "age"   = c(21, 22, 21, 20, 24),
+                 "city"  = c("sam", "gum", "sam", "ant", "agr"))
+View(df)
+
+nrow(df)      # row
+ncol(df)      # column
+dim(df)       # row and column
+
+```
+
+##6.2.Dataframe'lerde Sorgu İşlemleri
+
+```{r}
+df2 <- data.frame("A" = rnorm(100, 14, 3),
+                  "B" = rnorm(100, 27, 6),
+                  "C" = rnorm(100, 20, 12))
+df2
+
+df2$A < 12 ; which(df2$A < 12)
+
+df2$B > 34 ; which(df2$B > 34)
+
+index <- which(df2$C < 15) ; index
+df2$C[index]
+
+
+df2[index,]       # we create a subset of data frame rule with C < 15.
+alt <- df2[index, c("A","C")] ; alt
+
+
+# Let's find which values are higher than mean of B.
+mean(df2$B)
+
+hindex <- which(df2$B > mean(df2$B)) ; hindex
+df2[hindex, ]
+df2[hindex, c(1,3)]
+```
+
+##6.3.Subset Fonksiyonu
+
+-   subset parametresine istenen koşul girilir.
+
+-   select parametresine istenen sütunlar girilir.
+
+```{r}
+?subset
+
+CO2
+names(CO2)
+subset(CO2, subset = ( uptake > 30 &  Type == "Quebec"))
+subset(CO2, subset = ( uptake > 30 &  Type == "Quebec"), select = c(Treatment , conc))
+
+sCO2 <- subset(CO2, subset = ( uptake > 30 &  Type == "Quebec")) ; sCO2
+nrow(sCO2) ; nrow(CO2)
+ncol(sCO2) ; ncol(CO2)
+
+
+s2CO2 <- subset(CO2, subset = (uptake > 30 | Treatment == "nonchilled"), select = c(Type, conc))
+s2CO2
+nrow(s2CO2)
+
+
+
+# subset ile iç içe koşullar
+View(CO2)
+subset(CO2, subset = ( (Type == "Mississippi" | Treatment == "nonchilled") & ( 30 <= uptake | uptake < 35) ),
+       select = c(Type, Treatment, conc, uptake))
+
+kosulCO2 <- subset(CO2,
+                   subset = ( (Type == "Mississippi" | Treatment == "nonchilled") & ( 30 <= uptake | uptake < 35) ),
+                   select = c(Type, Treatment, conc, uptake))
+View(kosulCO2)
+nrow(kosulCO2) ; nrow(CO2)
+
+rownames(kosulCO2) <- seq(1,nrow(kosulCO2))
+View(kosulCO2)
+
+```
+
+##6.4.Dataframe'lerde Satırlarda ve Sütunlarda İşlemler
+
+-   rowMeans
+
+-   colMeans : Bundan elde ettiğimiz fonksiyonları df'nin satırlarına
+    eklemek mantıklı değildir.
+
+```{r}
+View(iris)
+
+# Satırlar bazında işlem.
+rmean <- rowMeans(iris[1:4]) ; rmean
+iris$rmean <- rmean ; View(iris)
+
+rmean2 <- rowMeans(iris[1:2]) ; rmean2
+iris["rmean2"] <- rmean2 ; View(iris)
+
+
+# Sütunlar bazında işlem.
+colMeans(iris[c(1,2,3,4,6,7)], na.rm = T)
+
+rbind(iris, colMeans(iris[c(1,2,3,4,6,7)], na.rm = T))
+
+```
+
+##6.5.Aggregate Fonksiyonu - Dataframe'lerde Gruplar Bazında
+Hesaplamalar
+
+-   aggregate :
+
+```{r}
+# uzun yol
+
+ind <- which(iris$Species == "setosa") ; ind
+setosa <- iris[ind,] ; setosa
+
+ind <- which(iris$Species == "versicolor") ; ind
+versicolor <- iris[ind,] ; versicolor
+
+ind <- which(iris$Species == "virginica") ; ind
+virginica <- iris[ind,] ; virginica
+
+
+meanSetosa <- mean(setosa$Sepal.Length) ; meanSetosa
+meanVersicolor <- mean(versicolor$Sepal.Length) ; meanVersicolor
+meanVirginica <- mean(virginica$Sepal.Length) ; meanVirginica
+
+
+# aggregate kullanarak hemen halletmek
+?aggregate
+
+aggregate(iris, by = list(iris$Species), FUN = mean)      # Species character olduğu için hata verir, ama sorun yok.
+aggregate(iris[1:4], by = list(iris$Species), FUN = mean) # Bu şekilde hata kalkar.
+
+aggregate(iris[1:4], by = list(iris$Species), FUN = sd , na.rm = T)
+
+aggregate(iris[1:4], by = list(iris$Species), FUN = sum , na.rm = T)
+
+```
+
+##6.6.Dışarıdan R'a Veri Aktarımı
+
+-   Excel dosayasını CSV formatına dönüştürüp aktarmak.
+
+-   Import Dataset seçeneği ile kısa bir şekilde aktarım yapılabilir.
+
+-   read.csv fonksiyonu ile csv dosyasını çekmek.
+
+```{r}
+singa <- singapore.csv
+View(singa)
+
+
+
+getwd()         # R studio bilgisayarın neresinde çalışıyor bunu öğrenmemizi sağlar.
+list.files()
+
+singapore <- read.csv("singapore.csv.csv", header = T, sep = ";", dec = ".")
+View(singapore)
+```
+
+##6.7.Merge Fonksiyonu
+
+-   İki dataframe'i birleştirmeyi sağlar.
+
+```{r}
+?merge
+
+  # Aynı kategorilerin ismi farklıysa işlem : 
+merge_df <- merge(Demografik, Transactions, by.x = "ID", by.y = "CUSTOMER_ID")
+View(merge_df)
+
+
+  # İkisini de CUSTOMER_ID yaptık
+Demografik2 <- Demografik
+names(Demografik2)
+names(Demografik2)[1] <- "CUSTOMER_ID" ; names(Demografik2)
+
+  # Aynı kategorilerin ismi aynıysa işlem :
+merge_df2 <- merge(Demografik2, Transactions, by = "CUSTOMER_ID")
+View(merge_df2)
+
+```
+
+##6.8.Betimsel Özet Bilgiler
+
+-   summary() : Veri setinin özet istatistiksel bilgilerini verir.
+
+-   str() : Veri setinin tüm değişkenlerinin türünü verir.
+
+-   head() : Default olarak Veri setinin ilk 6 satırını gösterir.
+
+-   tail() : Default olarak Veri setinin son 6 satırını gösterir.
+
+```{r}
+View(iris)
+
+summary(iris)
+
+str(iris)
+
+
+
+head(iris)
+head(iris, n = 9)
+
+tail(iris)
+tail(iris, n = 4)
+
+```
+
+##6.9.Dataframe Değişken İstatistikleri
+
+```{r}
+list.files()
+singapore <- read.csv("singapore.csv.csv", header = T, sep = ";", dec = ".")
+View(singapore)
+
+
+any(is.na(singapore$price))
+
+mean(singapore$price, na.rm = T)
+sd(singapore$price, na.rm = T)
+var(singapore$price, na.rm = T)
+median(singapore$price, na.rm = T)
+range(singapore$price, na.rm = T)
+
+hist(singapore$price)                       # Grafiğimizdeki değerlerin büyük çoğunluğuna göre bir filtreleme yaptık.
+hist(singapore$price[singapore$price <= 1000])  # Grafiğimiz filtrelenince daha düzgün hale geldi.
+
+
+
+  # İsmi saçma olan değişkenler çıkarılacak
+table(singapore$room_type)  # Boşluk, 110, 1200, 294, 299, 31, 40, 50, 60, 74, 75, 750 çıkarılacak.
+df <- singapore
+df <- df[-which(df$room_type == ""),] ; df
+df <- df[-which(df$room_type == "110"),]
+df <- df[-which(df$room_type == "1200"),]
+df <- df[-which(df$room_type == "294"),]
+df <- df[-which(df$room_type == "299"),]
+df <- df[-which(df$room_type == "31"),]
+df <- df[-which(df$room_type == "40"),]
+df <- df[-which(df$room_type == "50"),]
+df <- df[-which(df$room_type == "60"),]
+df <- df[-which(df$room_type == "74"),]
+df <- df[-which(df$room_type == "75"),]
+df <- df[-which(df$room_type == "750"),]
+
+View(df)
+table(df$room_type)
+
+
+quantile(df$price)
+quantile(df$price, probs = c(0.15, 0.35, 0.65, 0.95))
+
+```
+
+##6.10.Dataframelerde Veri Türleri Dönüştürme
+
+```{r}
+list.files()
+sngp <- read.csv("singapore.csv.csv", header = T, sep = ";", dec = ".")
+View(sngp)
+
+  # Veri türlerimizi kullanım yerlerine göre en doğru şekline ayarlayalım.
+
+class(sngp$name)
+sngp$name <- as.factor(sngp$name) ; class(sngp$name)
+  # sngp[, "name"] == sngp$name
+class(sngp[, "name"]) 
+sngp[, "name"] <- as.character(sngp$name) ; class(sngp[, "name"])
+
+
+
+class(sngp$room_type)
+sngp$room_type <- as.factor(sngp[, "room_type"]) ; class(sngp$room_type)
+
+
+  
+  # id'leri önce faktör yaptık, daha sonra numeric yapacağız. factor -> char -> numeric -> integer
+
+class(sngp$id)
+sngp$id <- as.factor(sngp$id) ; class(sngp$id)
+sngp[, 1] <- as.character(sngp[, 1]) ; class(sngp$id)
+sngp[, "id"] <- as.numeric(sngp[, "id"]) ; class(sngp$id)
+sngp$id <- as.integer(sngp$id) ; class(sngp$id)
+
+
+
+  # Kısa bir veri temizleme işlemi.
+
+class(sngp$room_type)
+sngp$room_type <- as.character(sngp$room_type)
+table(sngp$room_type)                         # Tablodaki gereksiz değerleri silelim.
+
+indx <- which(sngp$room_type == "" | sngp$room_type == "110" | sngp$room_type == "1200" | sngp$room_type == "294" | 
+                sngp$room_type == "299" | sngp$room_type == "31" | sngp$room_type == "40" | sngp$room_type == "50"| 
+                sngp$room_type == "60" | sngp$room_type == "74" | sngp$room_type == "75" | sngp$room_type == "750")
+indx
+
+sngp <- sngp[-indx, ]
+table(sngp$room_type)
+```
+
+##6.11.Apply Fonksiyon Grupları
+
+-   apply() : Dataframelerde çoğunlukla apply tercih edilir.
+
+-   lapply(): Büyük çoğunlukla listelerde kullanılır ama dataframelerde
+    de işe yarar. Sonucu liste halinde verir. Ayrıca lapply ile
+    dataframeler üzerinde satılar bazında işlem yapamayız, otomatik
+    olarak dataframe'in değişkenleri üzerinde işlem yapar.
+
+```{r}
+?apply
+
+View(iris)
+
+apply(iris[1:4], MARGIN = 1, FUN = mean)    # row mean
+  # apply'da yaptığımızın sağlaması. ilk değeri 2.55'di.
+iris[1, 1:4]
+class(iris[1, 1:4])
+as.numeric(iris[1, 1:4])
+mean(as.numeric(iris[1, 1:4]))
+
+
+apply(iris[1:4], MARGIN = 1, FUN = sd)      # row sd
+apply(iris[1:4], MARGIN = 1, FUN = sum)     # row sum
+
+
+
+
+apply(iris[1:4], MARGIN = 2, FUN = mean)    # col mean
+apply(iris[1:4], MARGIN = 2, FUN = sd)      # col sd
+apply(iris[1:4], MARGIN = 2, FUN = sum)     # col sum
+apply(iris[1:4], MARGIN = 2, FUN = max)     # col max
+
+
+
+
+
+?lapply
+lapply(iris[1:4], mean)
+lapply(iris[1:4], sum)
+lapply(iris[1:4], var)
+
+l <- list("A" = c(14,53,42,36,79,26,23,17,19,46),
+          "B" = c(1, 3, 5, 7, 9, 11, 13, 26, 32, 49),
+          "C" = c(11, 33, 45, 67, 83, 22))
+
+lapply(l, FUN = mean)
+lapply(l, FUN = sd)
+lapply(l, FUN = min)
+
+```
+
+##6.12.Attach, Detach, With fonksiyonları
+
+-   attach() : Veri setimizdeki değişkenleri ayrı ayrı vektör olarak
+    dışarı çıkarır. Aynı isme sahip değişkenler içeren birden fazla veri
+    setin varsa bunları aynı anda attachle kullanmak sorun yaratır.
+
+-   detach() : attach işlemini sonlandırır.
+
+-   with() : attach işleminin korulamı kullanımı gibi bir şeydir. Birden
+    fazla işlem yapacaksak "{}" kullanırız.
+
+```{r}
+?attach
+?detach
+
+df <- singapore ; View(df)
+names(df)
+
+attach(df)      # Başlatır
+
+host_name
+id
+room_type
+longitude
+
+class(id)
+id <- as.numeric(id) ; class(id)
+id
+
+detach(df)      # Sonlandırır.
+
+
+
+?with
+
+with(df, print(room_type))      # Virgülden sonra yapılacak işlemi yazıyoruz.
+
+with(df, mean(price, na.rm = T))
+
+with(df, {
+  x <- sd(price, na.rm = T)
+  y <- x + mean(price, na.rm = T)
+  print(y)
+})
+
+```
+
+#7.Fonksiyonel Programlama
+
+##7.1.Print, Cat ve Paste fonksiyonları
+
+-   print() : bir elemanın/nesnenin değerini yazdırır. Print fonksiyonu
+    içerisine yanlızca bir nesne yazılabilir. Print ile atama
+    yapabiliyoruz.
+
+-   cat() : Print gibi elemanları yazdırır fakat yan yana birden çok
+    eleman da yazdırabilir. cat fonksiyonunu kullanarak herhangi bir
+    değere atama yapılamaz.
+
+-   paste() : Genelde oluşturduğumuz bir karakter dizinini nesneye
+    atamak istediğimizde kullanırız. Cat gibi çalışır, fakat içerisine
+    yazılan her şeyi tek bir string yapar.
+
+-   paste0(): Paste'in aynısı sadece virgüller arasına boşluk koymaz.
+
+```{r}
+x <- "umut"
+y <- 42
+
+  #print
+print(x , y)          # y'yi yazdırmaz.
+
+print(x) ; print(y)
+
+z <- print(x)         # atama yapılabiliyor.
+z
+
+
+
+  #cat
+cat(x, y)             # her ikisini de yazdırır.
+cat(y, "<-" , x, "->", 12)
+
+z <- cat(x, "->", 12) # atama yapılamıyor.
+z
+
+cat(y, "->", "arzum", "\n", x, "->", 32, "\n bir alt satır daha")    # \n bir alt satıra geçmeyi sağlar.
+
+
+
+  #paste
+paste(x, y, "yaşında")
+p <- paste(x, y, "yaşında") ; p ; class(p)
+
+p0 <- paste0(x, y, "yaşında") ; p0 ; class(p0)
+
+```
+
+##7.2.if else koşulları
+
+```{r}
+
+if(6 == 6){
+  cat(6, "eşittir", 6,"'ya")
+}
+
+
+if(5 <= 3){
+  print("5 küçük eşittir 3'e")
+}else{
+  print("5 büyüktür 3'ten")
+}
+
+
+x <- ""
+if(9 > 7){
+  x <- paste("9 büyüktür 7'den")
+}else{
+  x <- paste("9 küçüktür 7'den")
+}
+x
+
+
+y <- c(13,45,63,27,19,3,4,2,73,85,14,42,36)
+if(mean(y) >= 32){
+  cat("y vektörünün ortalaması : ", mean(y), "\n ve bu ortalama 32'ye büyük eşittir")
+}else{
+  cat("y vektörünün ortalaması : ", mean(y), "\n ve bu ortalama 32'den küçüktür.")
+}
+
+```
+
+##7.3.AND OR Operatörleri
+
+```{r}
+View(iris)
+
+  #ve
+if((mean(iris$Sepal.Length) > 5.2) & (median(iris$Sepal.Width > 3.34))){
+  print("koşullar sağlandı.")
+}else{
+  print("koşullar sağlanamadı.")
+}
+
+mean(iris$Sepal.Length) ; median(iris$Sepal.Width)
+
+  #veya
+if((mean(iris$Sepal.Length) > 5.2) | (median(iris$Sepal.Width > 3.34))){
+  print("koşullar sağlandı.")
+}else{
+  print("koşullar sağlanamadı.")
+}
+
+
+if(((mean(iris$Sepal.Length) < 5) & (median(iris$Sepal.Width > 3.34))) | ((mean(iris$Sepal.Length) > 5) & (median(iris$Sepal.Width < 3.34))) ){
+  cat("Sepal length ortalama değeri", mean(iris$Sepal.Length), "olarak tespit edildi")
+}else{
+  print("Koşullar sağlanmadı ortalama hesaplanmadı.")
+}
+
+
+
+  # else if
+if((mean(iris$Sepal.Length) < 4)){
+  print("ilk if koşulu sağlandı.")
+}else if((mean(iris$Sepal.Length) < 5)){
+  print("ikinci if koşulu sağlandı.")
+}else if((mean(iris$Sepal.Length) < 6)){
+  print("üçüncü if koşulu sağlandı.")
+}else{
+  print("hiçbir if koşulu sağlanamadı.")
+}
+
+```
+
+##7.4.FOR döngüsü
+
+###7.4.1.for döngüsü temel
+
+```{r}
+
+for(i in 1:7){ cat(i," = i'nin değeri \n")}
+
+x <- c(13, 24, 32, 11, 9, 7, 3)
+for(i in x){
+  print(i)
+}
+
+for(i in 1:length(x)){
+  print(i)
+}
+
+for(i in 1:length(x)){
+  print(x[i])
+}
+
+
+for(i in 1:nrow(iris)){
+  print(iris$Species[i])
+}
+
+
+
+
+z <- c("u", "m", "u", "t")
+pas <- ""
+for(x in z){
+  pas <-paste0(pas, "-", x)
+}
+pas
+
+```
+
+###7.4.2.for döngüsü ve if else
+
+```{r}
+s <- c(1,3,4,2,6,5,7,8,8,9,21,4,3,2,34,1,4,325,32151324,5213,3,4,235,23)
+
+for(i in 1:length(s)){
+  if(s[i] %% 2 == 0){
+    cat(s[i], " => çift sayıdır\n")
+  }else if(s[i] %% 2 == 1){
+    cat(s[i], " => tek sayıdır\n")
+  }else{
+    print("geçersiz eleman")
+  }
+}
+
+```
+
+##7.5.While Döngüsü
+
+-   while içerisine girilen boolean değer doğru olduğu sürece while
+    çalışmaya devam eder.
+
+-   break komutu döngüyü direkt durdurur.
+
+```{r}
+x <- 5
+l <- 1
+
+while( x < 7 ){
+  
+  cat(l,". döngü gerçekleşti \n")
+  if(l == 9){
+    x = 7
+  }
+  
+  l = l+1
+  
+  Sys.sleep(1)
+  
+}
+
+
+
+c <- 1
+while(TRUE){
+  
+  cat(c,". döngü gerçekleşti \n")
+  
+  if( c == 10 ){break}
+  
+  c = c + 1
+  
+  Sys.sleep(1)
+}
+
+
+```
+
+##7.6.Nested Loops
+
+```{r}
+
+for(l in 1:5){
+  print(l)
+  for(j in 1:5)
+    cat("    ",j,"\n")
+}
+
+for(l in 1:5){
+  cat("\n",l, "=>")
+  for(j in 1:5)
+    cat(j," ")
+}
+
+
+
+iris$Species <- as.character(iris$Species)
+for(i in 1:nrow(head(iris, 7))){
+  
+  cat("\n",i,".satır =>")
+  
+  for(j in 1:ncol(iris)){
+    
+    cat(iris[i,j], " ")
+  
+  }
+}
+
+
+for( i in 1:nrow(iris)){
+  
+  for( j in 1:length(iris)){
+    
+    text <- paste(names(iris)[j], " değişkeninin ", i, ". satır değeri => ", iris[i, j])
+    print(text)
+    Sys.sleep(1)
+    
+  }
+}
+
+
+
+
+  # While içinde for döngüsü
+
+while(TRUE){
+  
+  print("Yeni while döngüsü başladı : ")
+  for( i in 1:5 ){
+    print(i)
+    Sys.sleep(1)
+  }
+  Sys.sleep(3)
+}
+```
+
+##7.7.For döngüsü ile vektör oluşturma
+
+```{r}
+View(iris)
+apply( iris[1:4], 2, mean )
+
+result <- character(length = length(iris$Petal.Length))
+result
+
+for(n in 1:length(iris$Petal.Length)){
+  
+  if( iris$Petal.Length[n] > 3.75 ){
+    result[n] <- "over"
+  }else if( iris$Petal.Length[n] == 3.75 ){
+    result[n] <- "equal"
+  }else{
+    result[n] <- "under"
+  }
+  
+}
+
+result
+
+
+```
+
+##7.8.Fonksiyonlar
+
+###7.8.1.Fonksiyon Oluşturma
+
+```{r}
+toplama <- function(x, y){
+  result = x + y
+  return(result)
+}
+toplama(3, 5)
+
+
+carpma <- function(a, b){
+  
+  return(a * b)
+}
+carpma(3, 5)
+
+
+myf <- function(y, z) {
+  
+  a = y * z
+  b = y + z
+  c = y %% z
+  result = (a + b) / c
+  
+  return(result)
+}
+myf(12, 34)
+
+
+
+```
+
+###7.8.2.Kullanıcı Girdisi Alma
+
+-   readline : konsola yazılanları char tipinde alır.
+
+-   prompt : readline'ın parametresidir ve bu paramatreye girilen
+    konsolda kullanıcıya gözükür, bilgilendirme gibi.
+
+```{r}
+?readline
+
+f <- function(){
+  
+  x = as.numeric( readline( prompt = "İlk sayıyı giriniz: ") )
+  y = as.numeric( readline( prompt = "İkinci sayıyı giriniz:") )
+  
+  return((x+y)*2)
+  
+}
+f()
+
+ort <- function(){
+  
+  n1 = readline( prompt = "1. sayı : ") 
+  n2 = readline( prompt = "2. sayı : ") 
+  n3 = readline( prompt = "3. sayı : ") 
+  
+  n1 = as.numeric(n1)
+  n2 = as.numeric(n2)
+  n3 = as.numeric(n3)
+  
+  ortalama = ( n1 + n2 + n3 ) /3
+  
+  result = paste(n1, ",", n2, ",", n3, " sayılarının ortalaması => ", ortalama)
+  
+  return(result)
+}
+
+ort()
+
+```
+
+###7.8.3.Fonksiyonlarda if else
+
+```{r}
+
+fu <- function(x, y){
+  
+  if( x > y ){
+    r1 = x - y
+  }else if( x < y ){
+    r1 = x + y
+  }else{
+    r1 = 0
+  }
+  
+  if( ( x < 10 ) & ( y < 15) ){
+    r2 = x**2 + y**2
+  }else{
+    r2 = x + y
+  }
+    
+  return( r1 + r2 )
+}
+
+fu( x = 10, y = 4 )
+fu( x = 8, y = 14 )
+
+```
+
+###7.8.4.Fonksiyon İçerisinde for loops
+
+```{r}
+
+ss <- function(x, population = T){
+  
+  if(population){
+    n = length(x)
+  }else{
+    n = length(x) - 1
+  }
+  
+  ort = sum(x) / length(x)
+  
+  toplam = 0
+  
+  for(f in x){
+    toplam = toplam + (ort - f)**2
+  }
+  
+  result = sqrt( toplam / n )
+  
+  return(result)
+}
+
+v <- c(3,5,7,2,3,1,2,9,1,3,8,7,5,5,6,4)
+
+ss(v, population = F)
+sd(v)
+```
+
+###7.8.5.While ve Append güzel örnek
+
+-   append : vektör uzunluğunu bilmediğimiz durumlarda, değerleri
+    vektörün sonuna eklemek istiyorsak kullanırız.
+
+```{r}
+
+ff <- function(data){
+  
+  strt = 1
+  stp  = nrow(data)
+  ort  = mean(data[, 3], na.rm = T)
+    
+  result <-  list()
+  result[["over"]] <- numeric()
+  result$under <- numeric()
+  
+  while(TRUE){
+    
+    if( data[strt, 3] < ort ) {
+      d = ( data[strt, 1] * data[strt, 2] ) / data[strt, 4]
+      
+      result$under = append( result[["under"]], d)
+      
+    }else{
+      d = ( data[strt, 1] * data[strt, 2] ) * data[strt, 4]
+      result$over = append(result$over, d)
+    }
+    
+    
+    strt = strt + 1
+    if(strt == stp){break}
+  
+  }
+  
+  return(result)
+}
+
+sonuc <- ff(iris)
+class(sonuc)
+sonuc
+```
+
+###7.8.6.Fonksiyonların içerisinde tanımlanan nesneler
+
+-   Fonksiyon içerisine " = " ya da " \<- " operatörü ile atanan
+    nesneler sadece o fonksiyon içerisinde geçerlidir.
+
+-   " \<\<- " ile atanan nesneler fonksiyon dışında da geçerlidir. Bu
+    operatör super atama operatörüdür.Eğer ekstrem bir durum yoksa \<\<-
+    bu atama operatörünü kullanmak sakıncalıdır.
+
+Genel Atama Kuralları:
+
+-   Fonksiyon parametreleri atanırken = kullanılır ve fonksiyon
+    içerisinde fonksiyona özel değişkenler üretilirken = kullanılır.
+
+-   Değişken oluşturulurken \<- kullanılır.
+
+-   Fonksiyon içinde oluşturulan değer dışarıda da lazımsa \<-
+    kullanılır.
+
+```{r}
+
+fx <- function(){
+  
+  x = 3
+  y = 4
+  z <-  9
+  return( x + y + z )
+}
+fx()
+x
+y
+z
+
+
+
+fy <- function(){
+  
+  x <<- 3
+  y <<- 5
+  z <<- 17
+  
+  return( x * y + z )
+}
+
+fy      # Fonksiyonun kodlarını gösterir.
+fy()
+
+x ; y ; z
+
+
+
+
+
+a <- 32
+b <- 45
+c <- 100
+
+fz <- function(){
+  
+  a <<- 3
+  b <- 5
+  c = 17
+  
+  return( x * y + z )
+}
+
+fz()
+
+a       # <<- operatörü dışarıda atanmış gibi a'ya etki etti yeni değerini verdi.
+b       # <-  operatörü sadece fonksiyon içerisinde fonskiyona özel bir b atadı ve dışarıda etkisi yok.
+c       # =   operatörü sadece fonksiyon içerisinde fonskiyona özel bir b atadı ve dışarıda etkisi yok.
+
+```
+
+#8.Tidyverse "dplyr" package
+
+##8.1.Tidyverse ve Pipeline mantığı
+
+-   Tidyverse veri manipülasyonunda oldukça kullanılır.
+
+-   En önemli özelliklerinden birisi " Pipeline ( %\>% ) " mantığıdır.
+    Yani işlemleri ardarda ekleyebilmek.
+
+```{r}
+PATH="${RTOOLS40_HOME}/usr/bin;${PATH}"
+write('PATH="${RTOOLS40_HOME}\\usr\\bin;${PATH}"', file = "~/.Renviron", append = TRUE)
+Sys.which("C:\\rtools40\\usr\\bin\\make.exe")
+install.packages("jsonlite", type = "source")
+
+
+
+install.packages("tidyverse")
+library(tidyverse)
+
+
+
+```
+
+##8.2.select()
+
+-   Select fonksiyonu ile sütunları, yani değişkenleri, seçebiliyoruz.
+
+```{r}
+library(tidyverse)
+
+View(iris)
+
+irisWidth <- iris %>% select(Sepal.Width, Petal.Width)
+irisWidth
+
+
+```
+
+##8.3.slice() ###8.3.1.slice basic
+
+-   Satırlar bazında işlem yapmamızı sağlar.
+
+```{r}
+
+iris %>% slice( 1, 2 )
+iris %>% slice( 9, 7, 13 )
+iris %>% slice( c(9, 7, 13) )
+
+
+iris %>% select(Petal.Length, Petal.Width) %>% slice( 10:18 )
+
+```
+
+###8.3.2.slice_min() ve slice_max()
+
+-   slice_min ya da slice_max fonksiyonlarında "order_by" içerisinden en
+    küçük ya da en büyük değerden başlayarak içine girdiğimiz "n" kadar
+    eleman seçecek.
+
+```{r}
+
+minSL <- iris %>% slice_min(order_by = Sepal.Length, n = 10)
+minSL
+
+iris %>% select(Petal.Length, Sepal.Length) %>% slice_max(order_by = Petal.Length, n = 7)
+
+iris %>% slice_max(order_by = Species, n = 10)# Alfabetik sıralama yapar ve virginicaların hepsini birbirine eşit gördüğü için 50'sini de alır.
+
+iris %>% slice_min(order_by = Species, n = 10)# Alfabetik sıralama yapar ve setosaların hepsini birbirine eşit gördüğü için 50'sini de alır.
+
+```
+
+###8.3.3.slice_sample()
+
+-   Verilen sayıya göre rastgele satır seçer.
+
+```{r}
+
+iris %>% slice_sample(n = 10)
+
+```
+
+##8.4.distinct()
+
+-   unique() fonksiyonu ile çok benzer.
+
+-   Veri setindeki unique değerleri verir.
+
+```{r}
+
+iris %>% distinct(Species)      # Species içerisinde unique 3 değer var, diğerleri zaten hep bunların tekrar kullanılması.
+
+iris %>% distinct(Species, .keep_all = T) # .keepall = T , olduğunda diğer değişkenleride ekler ama bir anlamı olmaz.
+
+
+```
+
+##8.4.arrange()
+
+-   sort() gibi.
+
+-   arrange() : küçükten büyüğe yapar.
+
+-   arrange(desc( )) : desc( ) parametresinin içerisine girerek
+    sıralamayı büyükten küçüğe yapabiliriz.
+
+```{r}
+?arrange
+  # Küçükten büyüğe sıralama.
+iris %>% arrange(Sepal.Width)   # Veri setini Sepal.Width'i baz alarak düzenledi.
+
+iris %>% arrange(Sepal.Width, Sepal.Length) # Veri setini önce Sepal.Width'e göre daha sonra Sepal.Width değerleri aynı olan kısımlarda ise Sepal.Length göre ayarladı.
+
+
+  # Büyükten küçüğe sıralama.
+iris %>% arrange(desc(Sepal.Length))
+
+iris %>% arrange(desc(Sepal.Length), desc(Sepal.Width))
+
+iris %>% arrange(desc(Sepal.Length), Sepal.Width) # Sepal.length'i büyükten -> küçüğe, Sepal.Width'i küçükten -> büyüğe yapar.
+```
+
+##8.5.summarise()
+
+```{r}
+
+iris %>% summarise( ortalama = mean(Sepal.Length), 
+                    medyan = median(Sepal.Length), 
+                    standartsapma = sd(Sepal.Length), 
+                    varyans = var(Sepal.Length) )
+
+```
+
+##8.6.group_by()
+
+```{r}
+  # Tek değişkene göre gruplama
+iris %>% group_by(Species)
+
+  
+df <- iris %>% group_by(Species)  # Tüm satırları gözüksün diye print(df, n = 150) yapcaz. R scriptte hepsi gözükmüyor.
+class(df)
+print(df, n = 150)        # Tüm satırları gözüksün diye n = 150 yaptık. R scriptte hepsi gözükmüyor.
+
+
+  # Birden fazla değişkenli gruplama
+iris$extra <- c(rep("A", 30), rep("B", 30), rep("C", 30), rep("D", 30), rep("E", 30))
+View(iris)
+
+iris %>% group_by(Species, extra) # Groups: Sepcies, extra [7] => ibaresi kaç farkllı grubumuz olduğunu gösterir.
+
+
+
+
+
+  # Group_by ve summurise beraber kullanımı
+?summarise
+iris %>% group_by(Species) %>% summarise( SpealLenOrt = mean(Sepal.Length),
+                                                 SepalLenSD  = sd(Sepal.Length))
+
+
+iris %>% group_by(Species, extra) %>% summarise( ortSL = mean(Sepal.Length),
+                                                 ortSW = mean(Sepal.Width),
+                                                 varSL = var(Sepal.Length),
+                                                 varSW = var(Sepal.Width))
+
+
+
+  # Kendi oluşturduğumuz fonksiyonu bunlarla kullanalım.
+fark <- function(x){
+  
+  return( max(x) - min(x) )
+}
+
+iris %>% group_by(Species, extra) %>% summarise( farkSl = fark(Sepal.Length),
+                                                 farkPL = fark(Petal.Length))
+
+```
+
+##8.7.filter()
+
+```{r}
+
+iris %>% filter(Sepal.Length <= 5)
+
+iris %>% filter(Sepal.Length <= 5 , Sepal.Width >= 3.5) # Virgül yerine & de kullanabiliriz bu fonksiyonda ikisi aynı anlama geliyor.
+iris %>% filter(Sepal.Length <= 5 & Sepal.Width >= 3.5)
+
+iris %>% filter(Sepal.Length <= 5 | Sepal.Width >= 3.5)
+
+
+iris %>% filter(Sepal.Length <= 5 & Sepal.Width >= 3.5) %>% select(Sepal.Length, Sepal.Width, Species)
+
+
+iris %>% 
+  filter(Sepal.Length <= 5 | Sepal.Width > 3.5) %>% 
+  select(Sepal.Length, Sepal.Width, Species)     %>%
+  group_by(Species) %>%
+  summarise( ortSL = mean(Sepal.Length), ortSW = mean(Sepal.Width) )
+
+```
+
+##8.8.mutate()
+
+-   Değişkenlerin dönüştürülmesini sağlar, ayrıca bunu kullanarak
+    dönüştürülen değerleri yeni bir değişken olarak atayabiliriz.
+
+-   mutate_if ile değişkenlerle tek tek uğraşmak yerine fonksiyon
+    yazarak hepsinde uygulayabiliriz.
+
+```{r}
+
+iris
+
+iris %>% mutate(Sepal.Length = log(Sepal.Length))
+iris %>% mutate(Sepal.Length = log(Sepal.Length), Sepal.Width = sqrt(Sepal.Width))
+
+
+iris %>% mutate( Sepal.Length.sqrt = sqrt(Sepal.Length) )
+
+
+  # Mesela iris$species'e bakalım ve karaktere dönüştürelim
+class(iris$Species)
+
+df <- iris %>% mutate(Species = as.character(Species))
+class(df$Species)
+
+
+
+
+  # mutate_if
+iris %>% mutate_if( is.numeric , function(x){ return(x*10) } )  # Burada ilk parametrelere fonksiyon girmiyoruz, normalde is.numeric()'tir fakat biz sadece                                                       adını yazmalıyız.
+
+
+iris %>% mutate_if( is.numeric , log )                          # Aynı şekilde fonksiyonların parantezleri olmayacak sadece adı.
+
+
+
+bolu10 <- function(x){ return( x / 10 ) }
+iris %>% mutate_if( is.numeric , bolu10 )
+
+
+
+
+  # Kafama göre çalışma çok mühim değil.
+charToFact <- function(x){
+  return(as.factor(x))
+}
+
+class(df$Species) ; class(df$extra)         # Buradaki ekstrayı "8.6." bölümünde ekledik.
+
+df2 <- df %>% mutate_if( is.character, charToFact )
+class(df2$Species) ; class(df2$extra)
+
+```
+
+#9.Data Visualisation
+
+##9.1.Histogram
+
+###9.1.1.Histogram Basics
+
+-   Histogram grafiğine bakarak bir veri setinin nasıl dağıldığı
+    hakkında bilgi sahibi olabiliriz.
+
+-   breaks : parametresi histogramdaki bar sayılarını değiştirmek
+    istediğimizde kullanılır.
+
+```{r}
+View(iris)
+
+attach(iris)
+
+hist(Sepal.Length)
+  # Basic
+hist(Sepal.Length, 
+     main = "Histogram of Iris Sepal Length",
+     xlab = "values(cm)",
+     ylab = "frequency"
+     )
+
+
+  # BREAKS
+hist(Sepal.Length, 
+     main = "Histogram of Iris Sepal Length",
+     xlab = "values(cm)",
+     ylab = "frequency",
+     breaks = 30
+     )
+
+
+  # LIMITED
+hist(Sepal.Length, 
+     main = "Histogram of Iris Sepal Length",
+     xlab = "values(cm)",
+     ylab = "frequency",
+     xlim = c(2, 10),
+     ylim = c(0, 40)
+     )
+
+
+
+  # One COLOR
+hist(Sepal.Length, 
+     main = "Histogram of Iris Sepal Length",
+     xlab = "values(cm)",
+     ylab = "frequency",
+     col = "lightblue"
+     )
+
+
+
+hist(Sepal.Length, 
+     main = "Histogram of Iris Sepal Length",
+     xlab = "values(cm)",
+     ylab = "frequency",
+     col = "#1dd1a1"
+     )
+
+
+
+
+  # two or more COLOR
+hist(Sepal.Length,
+     main = "Histogram of SEPAL LENGTH",
+     ylab = "frequency",
+     xlab = "values of Sepal Length (cm)",
+     ylim = c(0, 40),
+     col = c("#feca57", "#10ac84", "#ff6b6b")
+     )
+
+
+hist(Sepal.Length,
+     main = "Histogram of SEPAL LENGTH",
+     ylab = "frequency",
+     xlab = "values of Sepal Length (cm)",
+     ylim = c(0, 15),
+     breaks = 30,
+     col = c("#feca57", "#10ac84", "#ff6b6b", "#ff9ff3", "#00d2d3", "#5f27cd")
+     )
+
+
+detach(iris)
+```
+
+###9.1.2.Histograma Density Curve ekleme.
+
+-   hist(prob = T) : True yaptığımızda histogramdaki frekans değerlerini
+    yoğunluk değerlerine dönüştürür.
+
+-   density(vector) : içine girilen verinin yoğunluk değerlerini
+    oluşturur.
+
+-   density( adjust = number ) : adjust parametresi kıvrım sayısını
+    düzenlemeye yarar. Girilen sayıya göre kıvrım oranını azaltır.
+    Defaut'u 1'dir.
+
+-   lines() : Bu fonksiyonun görevi çizgi çizmektir.
+
+-   lines( lwd = number ) : parametresi çizginin kalınlığını belirler
+
+-   lines( lty = "dotted"): parametresi çizginin cinsini belirler.
+
+```{r}
+  # Kullanmak için WİTH yaptım keyfi.
+with(iris,{
+  hist(Sepal.Length,
+       main = "Histogram and Density Curve",
+       ylab = "Density",
+       xlab = "values of Sepal Length (cm)",
+       prob = T,
+       col = "#feca57"
+       )
+})
+
+# DEVAMI R SCRIPT HISTOGRAM İÇERİSİNDE.
+
+```
+
+##9.2.Scatter Diagram - Scatter Plot
+
+###9.2.1.Scatter Diagram - Scatter Plot - plot( bty = "L" ) : bty
+parametresi grafiğin çerçevesini değiştirir.
+
+-   plot( pch ) : parametresi grafikteki noktaların şeklini değiştirir.
+    Sayı veya kafana göre bir character girebilirsin.
+
+-   plot( type ) : parametresi grafiğin tipini değiştirir. Mesela "h"
+    yazdığında histogram gibi oluyor.
+
+-   İki değişkenli scatter diagramı çizmeden önce bu değişkenlerin aynı
+    uzunlukta olduğundan emin ol.
+
+-   plot( cex = number ): parametresi noktaların boyutlarını değiştirir.
+
+-   legend( pt.cex ) : parametresi sadece legend' üzerindeki noktaların
+    boyutunun değişmesini sağlar.
+
+-   legend( cex ): legend üzerindeki yazıların boyutunu etkiler.
+
+```{r}
+
+# KODLAR rscript ScatterDiagram içerisinde.
+
+```
+
+###9.2.2.Scatter Diagram =\> Lineer Doğru ve LOWELESS curve
+
+-   abline( ) : içerisine girilen fonksiyona göre doğru çizer.
+
+-   lm() : lineer Model anlamına gelir ve iki değişkeni alıp aralarında
+    bir lineer model oluşturur. Ve bunu abline içerisine girersen bu
+    lineer modelin doğrusunu çizer.
+
+-   NOT: Lineer Model oluştururken Bağımlı ve Bağımsız değişkenlere çok
+    dikkat et.Örnek olarak =\> plot( x = Ozone, y = Temp) şeklinde bir
+    grafiğin lineer modelini oluştururken: Burada bağımsız değişken x
+    eksenine yazılı olan, bağımlı değişken ise y eksenine yazılı olan
+    değişkendir.
+
+-   lm( bağımlı değişken \~ bağımsız değişken) YAZIM ŞEKLİ BUDUR.
+
+-   LM(Lineer Model) =\> bize iki değişken arasındaki ilişkiyi verir
+    mesela Ozone Temp arasındak ilişkinin "positive lineer" olduğunu
+    görüyoruz.
+
+-   NOT =\> R'da normalde fonksiyon( x , y ) şeklinde bir yazım olur
+    fakat, arada "\~"işareti varken fonksiyon( y \~ x ) yazımı olur.
+
+```{r}
+
+# KODLAR rscript ScatterDiagram içerisinde.
+
+```
+
+##9.3.Bar Chart ve Sayısal Değişkenleri Gruplandırma
+
+###9.3.1.Bize hazır olarak verilen bir gruba göre yapmak. - Bar Chart :
+Discrete veri setler için kullanılır ve grafikte genelde frekansları
+üzerinden yorum yapılır, bu yüzden veri setinin frekanslarını çıkartmak
+önemlidir.
+
+-   names.arg : parametresi bize her bir barın altındaki isimleri
+    değiştirme olanağı tanır.
+
+-   border : barların çerçeve rengini belirler.
+
+-   horiz : parametresi grafiği yan çevirmemizi sağlar.
+
+-   cex.axis ve cex.names : parametrelerini anlayabilirsin herhalde.
+
+-   axis.lty = number : parametresi karşısına girdiğin sayıya göre bir x
+    axisi oluşturur.
+
+```{r}
+View(mtcars)
+attach(mtcars)
+
+freq <- table(cyl)              # Frekans değerleri
+
+barplot(freq, main = "Bar Chart of Cylinder",
+        names.arg = c("4-CYL","6-CYL","8-CYL"),
+        col = c("lightblue", "blue", "darkblue"),
+        border = "grey")
+
+
+barplot(freq, main = "Bar Chart of Cylinder",
+        names.arg = c("4-CYL","6-CYL","8-CYL"),
+        col = c("lightblue", "blue", "darkblue"),
+        border = "grey",
+        horiz = T,
+        cex.axis = 1.5,
+        cex.names = 1.2,
+        )
+
+
+barplot(freq, main = "Bar Chart of Cylinder",
+        names.arg = c("4-CYL","6-CYL","8-CYL"),
+        col = c("lightblue", "blue", "darkblue"),
+        border = "grey",
+        horiz = F,
+        cex.axis = 1.5,
+        cex.names = 1.2,
+        axis.lty = 1
+        )
+
+detach(mtcars)
+
+```
+
+###9.3.2.Değişken değerlerine göre aralık belirleyerek kendi
+kategorimizi oluşturmak.
+
+```{r}
+attach(mtcars)
+
+n = length(mpg) ; n
+r = diff(range(mpg)) ; r
+k = 6 # Number of class ( 2^k >= n), ama 6 daha uygun oldu
+cWidth = ceiling(23.5 / 5) ; cWidth
+
+
+range(mpg) # 10.4-33.9
+breaks <- seq(10, 35, 5) ; breaks
+
+mpg.cut <- cut(mpg, breaks = breaks) ; mpg.cut
+mpg.freq <- table(mpg.cut) ; mpg.freq
+
+barplot(mpg.freq, names.arg = c("G1", "G2", "G3", "G4", "G5"),
+        col = "lightblue")
+
+detach(mtcars)
+```
+
+##9.4.Stacked Bar Chart
+
+```{r}
+attach(mtcars)
+
+t <- table(gear, cyl) ; t
+
+barplot(t, col = c("lightblue", "blue", "darkblue"), 
+        main = "Stacked Bar Chart" ,
+        names.arg = c("4 silindir", "6 silindir", "8 silindir"),
+        xlab = "Cylinder", ylab = "Frequency",
+        axis.lty = 1,
+        legend = c("3 Vites", "4 Vites", "5 Vites"),
+        args.legend = list(horiz = T, xjust = 0.8, yjust = 12, cex = 0.8)
+        )
+
+detach(mtcars)
+
+```
+
+#10.İstatistiksel Veri Analizleri -1
+
+![](images/Screenshot_1.png)
+
+##10.1. Bernoulli Distribution
+
+![](images/Screenshot_2.png)
+
+-   prob : parametresine p'nin olasılığı girilir.
+
+-   x : parametresi dbern'de 0 ya da 1'dir.
+
+-   lower.tail : logical; if TRUE (default), probabilities are P[X \<=
+    x], otherwise, P[X \> x].
+
+```{r}
+install.packages("Rlab")
+library(Rlab)
+
+?dbern
+
+# Deneyin başarılı olma olasılığı 0.7'dir.
+dbern(x = 0, prob = 0.7) 
+dbern(x = 1, prob = 0.7)
+dbern(x = 3, prob = 0.7)      # Çıktı 0 olur çünkü 0 yada 1 dışında bişe olma olasılığı imkansız.
+
+# Bir torbadan siyah top alma olasılığı 0.4'tür. Tek denemede siyah top almama olasılığım nedir ?
+dbern(x = 0, prob = 0.4)
+
+
+
+# Bir bernoulli deneyinde p = 0.6'dır. Sonucumuzun <=1 olma olasılığı nedir ? 
+# Yani 1 ya da 0. Ee zaten bernoullide 2 tane seçenek var. O zaman kesin çıkması gerek.
+pbern(q = 1, prob = 0.6, lower.tail = T)
+# Aynı deneyde sonucumuzun <=0 çıkma olasılığı nedir ?
+pbern(q = 0, prob = 0.6, lower.tail = T)
+# Aynı deneyde sonucun > 1 çıkma olasılığı nedir ? Tabiiki imkansız zaten 2 sonuç var 0 ve 1.
+pbern(q = 1, prob = 0.6, lower.tail = F)
+# Aynı deneyde sonucun > 0 olma olasılığı nedir ? 
+pbern(q = 0, prob = 0.6, lower.tail = F)
+
+
+
+
+
+# Bir bernoulli deneyinde p = 0.6'dır. p = <= 0.4 olasılığı ile ben hangi sonucu elde ederim ? 
+qbern( p = 0.4, prob = 0.6, lower.tail = T)
+
+qbern( p = 0.5, prob = 0.6, lower.tail = T)
+qbern( p = 0.6, prob = 0.6, lower.tail = F)
+
+
+
+
+# Rastgele bernoulli dağılan veriler elde edelim.
+
+rbern(n = 20, prob = .8)
+x <- rbern(n = 20, prob = .7)
+rbern(n = 20, prob = .6)
+y <- rbern(n = 20, prob = .2)
+
+table(x) ; table(y)
+```
+
+##10.2.Binomial Distribution
+
+![](images/Screenshot_3.png)
+
+```{r}
+?dbinom
+
+# Bir binom deneyinde p = 0.68'dir ve n = 10'dur.
+# Bu deneyde 4 tane başarılı gelme olasılığı.
+dbinom( x = 4, size = 10, prob = 0.68 )
+# Bu deneyde 3 tane başarısız gelme olasılığı.
+dbinom( x = 3, size = 10, prob = 1-0.68 )
+dbinom( x = 7, size = 10, prob = 0.68 )
+
+  # Binomial Distribution Graph
+plot(x = 1:30, y = dbinom( x = 1:30, size = 30, prob = 0.68 ),
+     bty = "L", pch = 19, type = "h", lwd = 2)
+lines( dbinom( x = 1:30, size = 30, prob = 0.5 ))
+lines( dbinom( x = 1:30, size = 30, prob = 0.3 ), lty = "dotted" )
+lines( dbinom( x = 1:30, size = 30, prob = 0.8 ), lty = "dotted" )
+
+
+
+  # Cumulative binom
+# Bir binom deneyinde p = 0.68'dir ve n = 10'dur.
+# Bu deneyde 5 ya da daha az sayıda başarılı olma olasılığım.
+pbinom( q = 5, size = 10, prob = 0.68, lower.tail = T )
+
+pbinom( q = 5, size = 50, prob = 0.68, lower.tail = T)
+pbinom( q = 5, size = 50, prob = 0.68, lower.tail = F)
+pbinom( q = 30, size = 50, prob = 0.68, lower.tail = T)
+pbinom( q = 30, size = 50, prob = 0.68, lower.tail = F)
+
+
+dbinom(x = 3, size = 10, prob = 0.68)+dbinom(x = 2, size = 10, prob = 0.68)+dbinom(x = 1, size = 10, prob = 0.68)+dbinom(0,10,0.68)
+pbinom(q = 3, size = 10, prob = 0.68, lower.tail = T)
+
+
+# Ders soru çözümü:
+p = 1/4 ; p
+pbinom(q = 9, size = 30, prob = p, lower.tail = F)
+
+
+
+  # qbinom : olasılık değerine göre kaç kez başarılı olacağız ?
+P <- pbinom( q = 5, size = 10, prob = 0.68, lower.tail = T) ; P
+qbinom( p = P, size = 10, prob = 0.68, lower.tail = T) # Bize yukarıdaki q'yu verir.
+
+# Bir deneyde p = 0.73, n = 40'tır. Bu deneyde 0.53 olasılıkla kaçın üstünde başarılı oluruz ?
+qbinom( p = 0.53, size = 40, prob = 0.73, lower.tail = F)
+
+
+
+  # rbinom: rastgele binom dağılan veriler.
+# Çıktılar bize kaç tane müşterinin alış veriş yapabileceğini gösterecek.
+rbinom(n = 50, size = 30, prob = 1/4)
+
+d <- rbinom(n = 50, size = 30, prob = 1/4)
+hist( d )
+
+
+```
+
+##10.3.Poisson Distribution
+
+![](images/Screenshot_4.png)
+
+```{r}
+?dpois
+
+
+# Bir saat içerisinde bir dükkana gelen müşterilerin ortalama sayısı = 18'dir. Lambda = 18
+# Bir saat içerisinde bu dükkana 14 müşteri gelme olasılığı nedir ?
+dpois(x = 14, lambda = 18)
+# Bir saat içerisinde bu dükkana 25 müşteri gelme olasılığı nedir ?
+dpois(25, 18)
+# 20 dakikada 7 müşteri gelme olasılığı nedir ? 60 / 3 = 20 bu yüzden  lambda / 3 = 18/3 yenilambda.
+dpois(7,18/3)
+
+
+
+plot(x = 1:50 , y = dpois(x = 1:50, lambda = 18), bty = "L", pch = 19, lwd = 2, type = "h")
+lines( dpois(x = 1:50, lambda = 25), col = "blue" )
+lines( dpois(x = 1:50, lambda = 35), col = "pink" )
+
+
+  #ppois: Cumulative
+# Bir saatte dükkana 14'ten daha fazla müşteri gelme olasılığı ? 
+ppois( q = 13, lambda = 18, lower.tail = F)
+# Yarım saatte dükkana 7 yada daha az müşteri gelme olasılığı nedir ? 
+ppois( q = 7, lambda = 18/2, lower.tail = T)
+
+
+
+  #qpois: girilen olasılık değerine göre x elde etme. x = istenen durum sayısı.
+# 0.75 olasılıkla 1 saatte kaç müşteri gelir ?
+qpois( p = 0.75, lambda = 18, lower.tail = T ) # gelecek müşteri sayısı <=21.
+qpois( p = 0.75, lambda = 18, lower.tail = F ) # gelecek müşteri sayısı > 15.
+
+# 90% olasılıkla 1 saatte kaç müşteri yada daha azı gelir ?
+qpois( p = 0.9, lambda = 18, lower.tail = T) # gelecek müşteri sayısı <=24
+
+
+  
+  #rpois: Rastgele poisson dağılan veriler.
+rpois(n = 40, lambda = 17)
+rpois(n = 40, lambda = 22)
+rpois(n = 40, lambda = 10)
+
+```
+
+##10.4.Hypergeometric Distribution
+
+![](images/Screenshot_1-01.png)
+
+```{r}
+?dhyper
+
+dhyper( x = 4, m = 26, n = 26, k = 10 )
+dhyper( x = 3, m = 26, n = 26, k = 10 )
+dhyper( x = 2, m = 26, n = 26, k = 10 )
+dhyper( x = 5, m = 26, n = 26, k = 10 )
+dhyper( x = 6, m = 26, n = 26, k = 10 )
+
+plot( x = 1:26, y = dhyper( x = 1:26, m = 26, n = 26, k = 10 ), bty = "L", type = "h", lwd = 2)
+lines(x = dhyper( x = 1:26, m = 26, n = 26, k = 10 ), lty = "dotted")
+lines(x = dhyper( x = 1:26, m = 26, n = 26, k = 20 ) )
+lines(x = dhyper( x = 1:26, m = 40, n = 26, k = 10 ) )
+
+
+
+  # phyper: cumulative
+# 5 veya daha az sayıda kırmızı kart çekme olasılığımız.
+phyper(q = 5, m = 26, n = 26, k = 10, lower.tail = T)
+# 15 denemede, 9 dan daha fazla kırmızı kart çekme olasılığımız.
+phyper(q = 9, m = 26, n = 26, k = 15, lower.tail = F)
+# 15 denemede, 9 ya da daha az sayıda kırmızı kart çekme olasılığımız.
+phyper(q = 9, m = 26, n = 26, k = 15, lower.tail = T)
+
+# Sorunun çözümü
+phyper(q = 1499, m = 5000, n = 5000, k = 3000, lower.tail = F)
+
+
+
+
+  # qhyper: olasılık değerine göre açığa çıkacak istenen x durum sayısı.
+qhyper(p = 0.32, m = 30, n = 20, k = 20, lower.tail = T)
+qhyper(p = 0.50, m = 30, n = 20, k = 20, lower.tail = T)
+qhyper(p = 0.90, m = 30, n = 20, k = 20, lower.tail = T)
+
+qhyper( p = 0.70, m = 5000, n = 5000, k = 3000, lower.tail = T )
+qhyper( p = 0.85, m = 5000, n = 5000, k = 3000, lower.tail = F )
+qhyper( p = 0.15, m = 5000, n = 5000, k = 3000, lower.tail = F )
+
+
+
+
+  #rhyper: nn = kaç tane veri üretmek istiyorsun ?
+rhyper(nn = 30, m = 26, n = 26, k = 15)
+mean( rhyper(nn = 30, m = 26, n = 26, k = 15) )
+hist(rhyper(nn = 30, m = 26, n = 26, k = 15))
+
+rhyper(nn = 30, m = 32, n = 20, k = 15)
+mean( rhyper(nn = 30, m = 32, n = 20, k = 15) )
+
+```
+
+##10.5.Uniform Distribution
+
+![](images/Screenshot_2-01.png)
+
+```{r}
+?dunif
+#Tüm olasılıklar eşit.
+dunif(x = 6, min = 0, max = 7)
+dunif(x = 5, min = 0, max = 7)
+dunif(x = 4, min = 0, max = 7)
+dunif(x = 3, min = 0, max = 7)
+dunif(x = 2, min = 0, max = 7)
+dunif(x = 1, min = 0, max = 7)
+
+plot(1:7,dunif(x = 1:7, min = 0, max = 7), type = "h", lwd = 3)
+
+
+
+punif(q = 4, 0, 10, lower.tail = T)
+punif(q = 7, 0, 10, lower.tail = F)
+
+
+qunif( p = 0.8, 0, 15, lower.tail = T )
+qunif( p = 0.8, 0, 15, lower.tail = F )
+
+qunif( p = 0.3, 0, 20, lower.tail = T )
+qunif( p = 0.3, 0, 20, lower.tail = F )
+
+
+runif(n = 40, min = 5, max = 15)
+hist(runif(n = 40, min = 5, max = 15))
+
+```
+
+##10.6.Exponantial Distribution
+
+![](images/Screenshot_3-01.png)
+
+```{r}
+?dexp
+# Verdiği örnek üzerinden işlem
+dpois(x = 0, lambda = 1/10)               # 1 dakika içerisinde otobüs gelmeme olasılığı.
+pexp( q = 1, rate = 1/10, lower.tail = F) # Otobüsün 1 dakikadan daha geç gelme olasılığı.
+
+
+dexp( x = 2, rate = 1/10 ) # 2. dakikada otobüs gelme olasılığı.
+dexp( x = 3, rate = 1/10 )
+dexp( x = 4, rate = 1/10 )
+dexp( x = 5, rate = 1/10 )
+
+
+plot( x = 1:50, dexp( x = 1:50, rate = 1/10 ), pch = 19, bty = "L" )
+lines( dexp( x = 1:50, rate = 1/5 ) )
+lines( dexp( x = 1:50, rate = 1/3 ) )
+
+
+# 20 dakikadabir otobüs gelen durakta, bir otobüsün 5 dakika içerisinde gelmeme olasılığı ?
+pexp(q = 5, rate = 1/20, lower.tail = F)
+# bir otobüsün 13 dakika ya da daha kısa sürede gelme olasılığı ?
+pexp(q = 13, rate = 1/20, lower.tail = T)
+
+
+
+# 20 dakikadabir otobüs gelen durakta, otobüs 0.7 olasılıkla kaçıncı dakikadan önce gelir ?
+qexp( p = 0.7, rate = 1/20 , lower.tail = T ) 
+# otobüs 0.65 olasılıkla kaçıncı dakikadan sonra gelir ?
+qexp( p = 0.65, rate = 1/20 , lower.tail = F )
+
+qexp( p = 0.95, rate = 1/20 , lower.tail = T )
+
+
+
+
+rexp( n = 50, rate = 1/20 )
+mean( rexp( n = 50, rate = 1/20 ) )
+
+```
+
+##10.7.Normal Distribution
+
+![](images/Screenshot_1-02.png)
+
+```{r}
+?dnorm
+
+dnorm( x = 20 , mean = 30, sd = 5 )
+dnorm( x = 25 , mean = 30, sd = 5 )
+dnorm( x = 30 , mean = 30, sd = 5 )
+
+plot( x = 1:50, y = dnorm( x = 1:50 , mean = 25, sd = 5) , pch = 19, bty = "L")
+lines( dnorm( x = 1:50 , mean = 25, sd = 10), lwd = 2, col = "pink" )
+lines( dnorm( x = 1:50 , mean = 40, sd = 5), lwd = 2, col = "lightblue" )
+
+
+
+  # pnorm: cumulative
+# Bir sınıftaki erkeklerin boy ort 180cm, sd = 10 cm
+# P( X > 160 )
+pnorm( q = 160, mean = 180, sd = 10, lower.tail = F )
+# P( X < 160 )
+pnorm( q = 160, mean = 180, sd = 10, lower.tail = T )
+
+pnorm( q = 170, mean = 180, sd = 10, lower.tail = T )
+pnorm( q = 180, mean = 180, sd = 10, lower.tail = T )
+
+
+
+  # qnorm : verilen olasılığa göre değer.
+# 0.90 olasılıkla kaç cm'den uzun olur ?
+qnorm( p = 0.9, mean = 160, sd = 10, lower.tail = F )
+# 0.70 olasılıkla kaç cm'den uzun olur ?
+qnorm( p = 0.7, mean = 160, sd = 10, lower.tail = F )
+# 0.60  olasılıkla kaç cm'den kısa olur ?
+qnorm( p = 0.6, mean = 160, sd = 10, lower.tail = T )
+# 0.50 olasılıkla kaç cm den kısa olur ?
+qnorm( p = 0.5, mean = 160, sd = 10, lower.tail = T )
+
+
+
+  #rnorm : random rastgele dağılan veriler.
+rnorm( n = 100, mean = 14, sd = 3 )
+mean(rnorm( n = 100, mean = 14, sd = 3 ))
+sd(rnorm( n = 100, mean = 14, sd = 3 ))
+
+```
+
+##10.8.Standard Normal Distribution
+
+-   mean = 0, sd = 1 olan her normal distribution =\> NORMAL STANDARD
+    DISTRIBUTION denir.
+
+##10.9.Büyük Sayılar Kanunu
+
+![](images/Screenshot_2-02.png)
+
+##10.10.Central Limit Theorem
+
+![](images/Screenshot_3-02.png)
+
+![](images/Screenshot_4-01.png)
+
+![](images/Screenshot_5.png)
+
+```{r}
+
+x <- c(10, 15, 14, 18, 10, 23, 23, 23, 56, 34, 13, 19, 19, 45, 45, 34)
+hist(x)
+
+for( i in 1:50 ){
+  y[i] <- mean(sample(x, size = 4, replace = F))
+}
+y
+hist(y)     # Normal dağılan bir veri seti elde ettik.
+
+par(mfrow = c( 1, 2 ))
+hist(x) ; hist(y)
+
+```
+
+#11.İstatistiksel Veri Analizleri -2
+
+#12.İstatistiksel Veri Analizleri -3
+
+##12.1.Normallik Testi
+
+-   Shapiro Wilk Testi : Genelde bu kullanılır. Korelasyon üzerinden
+    normalliği ölçer.
+
+-   Kolmogrov Simirnov testi : Standardt sapması daha yüksek verilerde
+    daha uygun sonuç verir. Bu yüzden n \<= 30 da kullanmak daha
+    mantıklı. İki veri verilir ve bu iki verinin aynı dağılımdan gelip
+    gelmediğine bakar.
+
+![](images/Screenshot_2-03.png)
+
+-   p \> 0.05 =\> buradaki p değeri bir olasılık değeridir ve 0.05
+    değeri level of signifigance. %95 güven aralığı alındığında alfa =
+    0.05 olur.
+
+```{r}
+View(iris)
+hist( iris$Sepal.Length, prob = T )   # Histograma baktığımızda normal dağılıma çok yaklaşık olduğunu görürüz.
+lines(density(iris$Sepal.Length))
+
+
+?shapiro.test
+shapiro.test(iris$Sepal.Length) # pvalue = 0.01 < 0.05 ( Normal dağılmıyor ama p çok 0.05 e yakın olduğu için normale yakın diyebiliriz. )
+# H0 : Reddedildi.
+# HA : Kabul edildi.
+
+
+shapiro.test(iris$Sepal.Width)  # pvalue = 0.10 > 0.05 ( H0: Kabul Edildi. )
+  # İspat.
+par(mfrow = c( 1,2 ))
+hist( iris$Sepal.Length )
+hist( iris$ Sepal.Width )   # Histogramlardan da sonucumuzun doğruluğunu görebiliriz.
+
+
+```
+
+##12.2.Normallik Testi Büyük Verilerde
+
+-   shapiro wilk testi büyük veriler için doğru sonuçlar vermez. N \>
+    300-500 gibi.
+
+-   Bu yüzden veri setinden örneklemler alarak test ederiz.
+
+```{r}
+sp <- StudentsPerformance
+dim(sp)
+summary(sp)
+
+hist(sp$math.score)         # Sola çarpık bir veri.
+
+# H0: Normal Dağılımdır.
+# HA: Normal Dağılım değildir.
+# Conf 0.95, alfa = 0.05
+shapiro.test(sp$math.score) # p value < 0.05 H0 reddedildi.
+
+# Veri setinin sola çarpık kısmını çıkarıp veri setimizi normal hale getirelim.
+hist(sp$math.score[sp$math.score > 30 ])        # Normal dağılan veri haline geldi.
+shapiro.test(sp$math.score[sp$math.score > 30 ])# 
+
+
+# 1-100
+cleanScore <- sp$math.score[sp$math.score > 30 ]
+shapiro.test(cleanScore[1:100])
+# 100-200
+shapiro.test(cleanScore[100:200])
+# 200-300
+shapiro.test(cleanScore[200:300])
+# 300-400
+shapiro.test(cleanScore[300:400])
+
+  # Örneklemler yardımı ile büyük verinin normalliğini bulma :
+pValue <- numeric(50)
+for( i in 1:50 ){
+  s <- sample(cleanScore, 100)
+  pValue[i] <- shapiro.test(s)$p.value
+}
+pValue
+mean(pValue)  # 0.416 > 0.05 yani büyük verimiz normal dağılıyor.
+
+
+```
+
+##12.3.Tek Örneklemli T-Testi
+
+###12.3.1.Tek örneklemli t testi
+
+![](images/paste-33309EF0.png)
+
+```{r}
+View(iris)
+
+hist(iris$Sepal.Length)     # Yaklaşık olarak normal gözüküyor.
+shapiro.test(iris$Sepal.Length)   # p <0.05 Ho: Reddedildi. Normal değil.
+
+?t.test
+t.test(x = iris$Sepal.Length, mu = 3, alternative = "two.sided", conf.level = 0.95)
+# Ho: ortalama = 3
+# Ha: ortalama =/= 3
+# p < 0.05 Ho hipotezi reddedildi.
+
+result <- t.test(x = iris$Sepal.Length, mu = 3, alternative = "two.sided", conf.level = 0.95)
+names(result)
+result$p.value
+result$estimate
+result$parameter
+result$conf.int
+
+
+t.test(x = iris$Sepal.Length, mu = 3, alternative = "less", conf.level = 0.95)
+# Ho: ortalama >= 3
+# Ha: ortalama < 3
+# pvalue = 1 > 0.05 Ho hipotezi reddedilemez.
+
+
+t.test(x = iris$Sepal.Length, mu = 5.70, alternative = "greater", conf.level = 0.95)
+# Ho: ortalama <= 5.70
+# Ha: ortalama  > 5.70
+# pvalue = 0.01783 < 0.05 Ho hipotezi reddedildi.
+
+
+t.test(x = iris$Sepal.Length, mu = 5.76, alternative = "two.sided", conf.level = 0.95)
+# Ho: ortalama = 5.76
+# Ha: ortalama =/= 5.76
+# p < 0.05 Ho hipotezi reddedilemez.
+
+
+```
+
+###12.3.2.Büyük verilerde tek örneklemli t testi
+
+-   Büyük verilerde bu işi yaparken sample'lar alınması gerekir.
+
+```{r}
+
+sp <- StudentsPerformance
+hist(sp$math.score)
+mean(sp$math.score)
+
+t.test(sp$math.score, mu = 70)   # Büyük verilerde bu şekilde test etmek yanlıştır.
+
+pvalue <- numeric(50)
+sonuc <- character(50)
+for( i in 1:50 ){
+  x <- sample(sp$math.score, 50)
+  pvalue[i] <- t.test(x, mu = 70)$p.value
+  
+  if( pvalue[i] >= 0.05 ){
+    sonuc[i] <- "Ho: Reddedilemez"
+  }else{
+    sonuc[i] <- "Ho: Reddedilebilir."
+  }
+}
+
+pvalue
+mean(pvalue) # > 0.05. O zaman aslında bizim Ho: hipotezimiz reddedilemez. Yani ;
+# Ho: ortalama = 70
+# Ha: ortalama =/= 70
+sonuc
+table(sonuc)
+
+```
+
+##12.4.Wilcoxen Signed Rank Test
+
+-   Non-parametric: Kesikli verilerde kullanılır.
+
+-   NOT: Veriler kesikli olsa bile veri çeşitliliği yeterince fazlaysa
+    T-Test kullanılabilir.
+
+-   Wilcoxen testi median değeri üzerinden hesaplama yapar. Çünkü burada
+    kullanılan veri setleri çarpık oluyor, böyle durumlarda medianla
+    işlem yapmak daha mantıklı.
+
+```{r}
+View(warpbreaks)
+
+hist(warpbreaks$breaks)
+shapiro.test(warpbreaks$breaks) # Normallik testi => Normal değil.
+
+?wilcox.test
+wilcox.test(x = warpbreaks$breaks, mu = 40, conf.int = T, conf.level = 0.95)
+#Ho: ortanca değer = 40.
+#Ha: ortanca değer =/= 40.
+
+median(warpbreaks$breaks)
+
+wilcox.test(x = warpbreaks$breaks, mu = 40,alternative = "less", conf.int = T, conf.level = 0.95)
+#Ho: ortanca değer >= 40.
+#Ha: ortanca değer < 40.
+# p value < 0.05 Ho: Reddedilir.
+
+wilcox.test(x = warpbreaks$breaks, mu = 40,alternative = "greater", conf.int = T, conf.level = 0.95)
+#Ho: ortanca değer <= 40.
+#Ha: ortanca değer > 40.
+# p value > 0.05 Ho: Reddedilemez.
+
+```
+
+##12.5.Bağımsız İki Örneklem T Test
+
+-   Bağımsız olan iki örneklemin ortalamalarının birbirinden
+    farklılığını test etmek için kullanılır.
+
+![](images/paste-F858DCFD.png)
+
+-   Bu testi kullanırken homojen varyanslılığa dikkat edilmesi gerekir.
+
+-   Homojen Varyanslılık : İki örneklemin varyanslarının yaklaşık olarak
+    eşit olmasıdır.
+
+###12.5.1.Homojen Varyanslılık Test Etme
+
+![](images/paste-D173DCCF.png)
+
+-   Bartlett's Test : Birden fazla bağımsız değişkene uygulanabilir.
+    Normal Dagiliyorsa kullanilir.
+
+-   Levene's Test :
+
+-   Fligner-Killeen Test:
+
+####12.5.1.1.Bartlett's Test
+
+```{r}
+
+data <- subset(iris, subset = (Species != "setosa"))
+
+shapiro.test(data$Sepal.Width[data$Species == "virginica"])    #Normallik sağlandı.
+shapiro.test(data$Sepal.Width[data$Species == "versicolor"])   #Normallik sağlandı.
+shapiro.test(data$Sepal.Length)   #Normallik sağlandı.
+
+boxplot( data$Sepal.Width ~ as.character(data$Species) )    
+# Boxplot çizdirmemizdeki amaç verilerin min max değerleri arasındaki farkı, mean median değerlerinin arasındaki uzaklıkları görmekti yani aslında 2 grubumuzun dağılımları hakkında bilgi edinmek için yaptık.
+
+bartlett.test( data$Sepal.Width ~ as.character(data$Species) )    # pvalue= 0.849 > 0.05 Homojenlik sağlandı.
+# Ho: Varyanslar homojendir.
+# Ha: Varyanslar homojen değildir.
+
+boxplot( data$Sepal.Length ~ as.character(data$Species) )
+bartlett.test(data$Sepal.Length ~ as.character(data$Species))     # pvalue = 0.1478 >0.05 Ho reddedilemez.
+# Ho: Varyanslar homojendir.
+# Ha: Varyanslar homojen değildir.
+
+
+```
+
+####12.5.1.2.Levene's Test
+
+```{r}
+install.packages("car")
+library(car)
+?levene.test
+
+data <- subset(iris, subset = (Species != "virginica"))
+
+shapiro.test(data$Petal.Width[data$Species == "setosa"])      # Normal değil.
+shapiro.test(data$Petal.Width[data$Species == "versicolor"])  # Normal değil.
+
+boxplot(data$Sepal.Width ~ as.character(data$Species) ) # Varyansları benzer duruyor. Testle kanıtlayalım:
+
+leveneTest( data$Sepal.Width ~ as.character(data$Species) ) # p > 0.05 Ho reddedilemez.
+# Ho: Homojen varyanslıdır.
+# Ha: Homojen varyanslı değildir.
+
+
+```
+####12.5.1.2.Fligner-Killeen Test
+
+```{r}
+View(warpbreaks)
+
+shapiro.test(warpbreaks$breaks[warpbreaks$wool == "A"]) # Normal dağılım yok.
+shapiro.test(warpbreaks$breaks[warpbreaks$wool == "B"]) # Normal dağılım yok.
+
+boxplot( warpbreaks$breaks ~ warpbreaks$wool )    # Homojen Varyanslılık yok gözüküyor. Testle bakalım:
+
+fligner.test(warpbreaks$breaks ~ warpbreaks$wool) # Test sonucuna göre homojen varyanslılık var.
+# Ho: Homojen varyanslılık var.
+# Ha: Homojen varyanslılık yok.
+
+bartlett.test(warpbreaks$breaks ~ warpbreaks$wool)  # Ho reddedildi.
+leveneTest(warpbreaks$breaks ~ warpbreaks$wool)     # Ho reddedilemez.
+fligner.test(warpbreaks$breaks ~ warpbreaks$wool)   # Ho reddedilemez.
+
+```
+
+
+
+#13. Veri Modelleme Aşamaları ve Veri Ön İşleme
+
+##13.1.Min-Max Normalizasyon İşlemi
+
+```{r}
+View(ptk)
+
+minMaxNorm <- function(x){
+  
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+ptk$cdur <- minMaxNorm(ptk$cdur)*100
+ptk$vdur <- minMaxNorm(ptk$vdur)*100
+ptk$wordfreq <- minMaxNorm(ptk$wordfreq)*100
+
+ptk
+```
+
+
+
+
+
+
+
+
+
+
+
